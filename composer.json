@@ -1,0 +1,34 @@
+{
+    "name": "leafs/billing",
+    "description": "Leaf Billing API design",
+    "keywords": [
+        "billing",
+        "payments",
+        "leaf",
+        "php"
+    ],
+    "homepage": "https://github.com/leafsphp/billing",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Michael Darko",
+            "email": "mickdd22@gmail.com",
+            "homepage": "https://mychi.netlify.app",
+            "role": "Developer"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Leaf\\": "src"
+        },
+        "files": [
+            "src/functions.php"
+        ]
+    },
+    "minimum-stability": "dev",
+	"prefer-stable": true,
+    "require-dev": {
+        "leafs/alchemy": "^2.2"
+    }
+}
