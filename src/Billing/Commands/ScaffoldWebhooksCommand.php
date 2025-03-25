@@ -9,7 +9,9 @@ class ScaffoldWebhooksCommand extends Command
     protected static $defaultName = 'scaffold:billing-webhooks';
     public $description = 'Scaffold billing webhooks';
 
-    public function handle()
+    public $help = "This command will scaffold billing webhooks for your application. You can choose between different scaffolds like default, react, vue, svelte etc.";
+
+    protected function handle()
     {
         $type = billing()->providerName() ?? 'stripe';
 

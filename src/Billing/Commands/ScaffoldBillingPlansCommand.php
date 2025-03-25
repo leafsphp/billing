@@ -9,13 +9,15 @@ class ScaffoldBillingPlansCommand extends Command
     protected static $defaultName = 'scaffold:billing-plans';
     public $description = 'Scaffold billing plans for subscriptions';
 
+    public $help = "This command will scaffold billing plans for your application. You can choose between different scaffolds like default, react, vue, svelte etc.";
+
     protected function config()
     {
         $this
             ->setOption('scaffold', 's', 'optional', 'Which scaffold to use for authentication (default/react/vue/svelte)', 'default');
     }
 
-    public function handle()
+    protected function handle()
     {
         $directory = getcwd();
         $scaffold = $this->option('scaffold');
