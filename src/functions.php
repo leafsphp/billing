@@ -14,6 +14,8 @@ if (!function_exists('billing')) {
             });
         }
 
-        return \Leaf\Config::get('billing')->getDriver($settings);
+        return \Leaf\Config::get('billing')->getDriver(
+            is_array($settings) ? null : $settings
+        );
     }
 }
