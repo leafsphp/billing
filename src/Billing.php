@@ -5,96 +5,64 @@ namespace Leaf;
 /**
  * Leaf Billing
  * -----------
- * Unified billing system for Leaf. Works with Stripe, Paystack and LemonSqueezy.
- * More providers coming soon.
+ * Unified billing system for Leaf. Works with Stripe and Paystack,
+ * and more providers coming soon.
  */
-trait Billing
+class Billing
 {
     /**
-     * Billing configuration
+     * Config for full billing library
+     * @var array
      */
-    public $config = [
-        'mode' => 'purchase',
-        'currency.name' => 'usd',
-        'currency.symbol' => '$',
-    ];
+    protected $config = [];
 
-    /**
-     * Billing provider
-     */
-    public $provider;
+    protected $instances = [];
 
-    public function __construct($billingSettings = [])
+    public function __construct($config = [])
     {
-        $this->initProvider($billingSettings);
+        $this->config = $config;
     }
 
     /**
-     * Get/Set billing configuration
-     * @param string|array $key Config key or array of config
+     * Get a billing provider via name in config
+     * 
+     * @param string|null $driver Provider name
+     * @throws \Exception
+     * @return \Leaf\Billing\BillingProvider
      */
-    public function config($key = null)
+    public function getDriver(?string $driver = null)
     {
-        if (is_array($key)) {
-            $this->config = array_merge($this->config, $key);
-            return $this;
+        $driver = $driver ?? $this->config['default'] ?? 'stripe';
+
+        if (!isset($this->instances[$driver])) {
+            $instanceConfig = $this->config['connections'][$driver] ?? null;
+
+            if (!$instanceConfig) {
+                throw new \Exception("Driver $driver not found in billing config");
+            }
+
+            $className = ucfirst($instanceConfig['driver']);
+            $provider = "Leaf\\Billing\\$className";
+
+            $this->instances[$driver] = new $provider(array_merge(
+                ['connection' => $instanceConfig],
+                $this->config
+            ));
         }
 
-        return $key ? $this->config[$key] : $this->config;
+        return $this->instances[$driver];
     }
 
     /**
-     * Get all tiers
+     * Get billing commands to register
+     * @return array
      */
-    public function tiers($type = 'monthly')
+    public static function commands()
     {
-        return array_filter($this->tiers, function ($tier) use ($type) {
-            return $tier['type'] === $type;
-        });
-    }
-
-    /**
-     * Get a tier
-     */
-    public function tier($id)
-    {
-        return $this->tiers[$id];
-    }
-
-    /**
-     * Return current billing provider interface
-     */
-    public function provider()
-    {
-        return $this->provider;
-    }
-
-    /**
-     * Get all populated tiers
-     *
-     */
-    public function groups()
-    {
-        $populatedTiers = [];
-
-        foreach ($this->tiers as $tier) {
-            $populatedTiers[] = $tier['type'];
-        }
-
-        return array_unique($populatedTiers);
-    }
-
-    /**
-     * Get groups with their tiers
-     */
-    public function groupsWithTiers()
-    {
-        $groups = [];
-
-        foreach ($this->groups() as $group) {
-            $groups[$group] = $this->tiers($group);
-        }
-
-        return $groups;
+        return [
+            \Leaf\Billing\Commands\ScaffoldWebhooksCommand::class,
+            \Leaf\Billing\Commands\ScaffoldBillingPlansCommand::class,
+            // \Leaf\Billing\Commands\BillingInitPlansCommand::class,
+        ];
     }
 }

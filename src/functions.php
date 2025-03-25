@@ -1,17 +1,19 @@
 <?php
 
 if (!function_exists('billing')) {
-    function billing($settings = [])
+    /**
+     * Get instance of billing provider
+     * @param array|string|null $settings Billing settings or provider name
+     * @return \Leaf\Billing\BillingProvider
+     */
+    function billing($settings = null)
     {
         if (!(\Leaf\Config::getStatic('billing'))) {
             \Leaf\Config::singleton('billing', function () use ($settings) {
-                $className = ucfirst($settings['provider'] ?? 'Stripe');
-                $provider = "Leaf\\Billing\\$className";
-
-                return new $provider($settings);
+                return new \Leaf\Billing($settings ?? []);
             });
         }
 
-        return \Leaf\Config::get('billing');
+        return \Leaf\Config::get('billing')->getDriver($settings);
     }
 }
