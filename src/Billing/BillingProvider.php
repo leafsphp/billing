@@ -52,10 +52,9 @@ interface BillingProvider
 
     /**
      * Parse a webhook event
-     * @param array $data
      * @return Event
      */
-    public function webhook(array $data): Event;
+    public function webhook(): Event;
 
     /**
      * Get tiers set in the billing config
