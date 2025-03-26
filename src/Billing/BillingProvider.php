@@ -27,9 +27,9 @@ interface BillingProvider
     /**
      * Get a subscription by ID
      * @param string $id
-     * @return Subscription
+     * @return Subscription|null
      */
-    public function subscription(string $id): Subscription;
+    public function subscription(string $id);
 
     /**
      * Get all subscriptions
@@ -40,9 +40,9 @@ interface BillingProvider
     /**
      * Get a session by ID
      * @param string $id
-     * @return bool
+     * @return Session|null
      */
-    public function session(string $id): bool;
+    public function session(string $id);
 
     /**
      * Check if billing is successful
