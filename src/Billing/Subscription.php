@@ -9,5 +9,8 @@ namespace Leaf\Billing;
  */
 class Subscription
 {
-    // 
+    public function __construct($id)
+    {
+        // 
+    }
 }

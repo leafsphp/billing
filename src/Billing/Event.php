@@ -9,5 +9,8 @@ namespace Leaf\Billing;
  */
 class Event
 {
-    // 
+    public function __construct($event)
+    {
+        // 
+    }
 }

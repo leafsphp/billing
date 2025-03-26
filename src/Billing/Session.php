@@ -9,5 +9,8 @@ namespace Leaf\Billing;
  */
 class Session
 {
-    // 
+    public function __construct($paymentSession)
+    {
+        // 
+    }
 }
