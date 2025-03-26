@@ -29,7 +29,7 @@ interface BillingProvider
      * @param string $id
      * @return Subscription|null
      */
-    public function subscription(string $id);
+    public function subscription(string $id): ?Subscription;
 
     /**
      * Get all subscriptions
@@ -42,19 +42,19 @@ interface BillingProvider
      * @param string $id
      * @return Session|null
      */
-    public function session(string $id);
-
-    /**
-     * Check if billing is successful
-     * @return bool
-     */
-    public function isSuccessful(): bool;
+    public function session(string $id): ?Session;
 
     /**
      * Parse a webhook event
-     * @return Event
+     * @return Event|null
      */
-    public function webhook(): Event;
+    public function webhook(): ?Event;
+
+    /**
+     * Parse a session from callback
+     * @return Session|null
+     */
+    public function callback(): ?Session;
 
     /**
      * Get tiers set in the billing config
