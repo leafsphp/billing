@@ -60,8 +60,9 @@ class Billing
     public static function commands()
     {
         return [
-            \Leaf\Billing\Commands\ScaffoldWebhooksCommand::class,
-            \Leaf\Billing\Commands\ScaffoldBillingPlansCommand::class,
+            \Leaf\Billing\Commands\ScaffoldSubscriptionsCommand::class,
+            // \Leaf\Billing\Commands\ScaffoldWebhooksCommand::class,
+            // \Leaf\Billing\Commands\ScaffoldBillingPlansCommand::class,
             // \Leaf\Billing\Commands\BillingInitPlansCommand::class,
         ];
     }
