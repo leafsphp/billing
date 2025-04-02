@@ -42,8 +42,8 @@ return [
 
         'paystack' => [
             'driver' => 'paystack',
-            'secrets.publicKey' => _env('PAYSTACK_PUBLIC_KEY'),
-            'secrets.secretKey' => _env('PAYSTACK_SECRET_KEY'),
+            'secrets.apiKey' => _env('PAYSTACK_API_KEY'),
+            'secrets.publishableKey' => _env('PAYSTACK_PUBLISHABLE_KEY'),
             'secrets.webhook' => _env('PAYSTACK_WEBHOOK_SECRET'),
             'version' => _env('PAYSTACK_API_VERSION', null),
             'currency' => [
@@ -89,7 +89,6 @@ return [
             'trialDays' => 5,
             'price.monthly' => 10,
             'price.yearly' => 100,
-            'discount' => 0,
             'features' => [
                 [
                     'title' => 'Something 1',

@@ -1,0 +1,24 @@
+timestamps: false
+
+columns:
+  name: string
+  plan_id: string
+  payment_session_id:
+    type: string
+    nullable: true
+  subscription_id:
+    type: string
+    nullable: true
+  status: string
+  start_date:
+    type: timestamp
+    useCurrent: true
+  end_date:
+    type: timestamp
+    useCurrent: true
+  trial_ends_at:
+    type: timestamp
+    nullable: true
+
+relationships:
+  - User
