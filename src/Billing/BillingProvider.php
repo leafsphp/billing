@@ -11,6 +11,26 @@ namespace Leaf\Billing;
 interface BillingProvider
 {
     /**
+     * Retrieve stripe customer for current user
+     * @return \Stripe\Customer|null
+     */
+    public function customer(): ?\Stripe\Customer;
+
+    /**
+     * Update user with provider customer id
+     * @param string $customerId
+     * @return void
+     */
+    public function updateCustomer(string $customerId): void;
+
+    /**
+     * Create stripe customer and update user
+     * @param array|null $data The data for customer
+     * @return bool
+     */
+    public function createCustomer(?array $data = null): bool;
+
+    /**
      * Create a checkout session for an instant payment
      * @param array $data
      * @return Session
@@ -19,23 +39,10 @@ interface BillingProvider
 
     /**
      * Create a checkout session for a subscription
-     * @param array $data
+     * @param array $data The data for the subscription [name/id required]
      * @return Session
      */
     public function subscribe(array $data): Session;
-
-    /**
-     * Get a subscription by ID
-     * @param string $id
-     * @return Subscription|null
-     */
-    public function subscription(string $id): ?Subscription;
-
-    /**
-     * Get all subscriptions
-     * @return array
-     */
-    public function subscriptions(): array;
 
     /**
      * Get a session by ID
@@ -58,22 +65,23 @@ interface BillingProvider
 
     /**
      * Get tiers set in the billing config
+     * @param string|null $billingPeriod The period to get tiers for (will return all tiers if null)
      * @return array
      */
-    public function tiers(): array;
+    public function tiers(?string $billingPeriod = null): array;
+
+    /**
+     * Get a tier by it's id
+     * @param string $id The billing tier id
+     * @return array
+     */
+    public function tier(string $id): array;
 
     /**
      * Get billing periods as defined in the billing config
      * @return array
      */
     public function periods(): array;
-
-    /**
-     * Get tiers ordered by billing period
-     * @param string|null $period The period to get tiers for (will return all tiers if null)
-     * @return array
-     */
-    public function tiersByPeriod($period = null): array;
 
     /**
      * Get the provider name
