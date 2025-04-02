@@ -172,6 +172,46 @@ class Session
         return (array) $this->providerSession->metadata;
     }
 
+    /**
+     * Check if the current session is for a subscription
+     * @return bool
+     */
+    public function isSubscription(): bool
+    {
+        return $this->providerSession->subscription !== null;
+    }
+
+    /**
+     * Activate a subscription/trial
+     * @return bool
+     */
+    public function activateSubscription(): bool
+    {
+        if (!$this->isSubscription()) {
+            return false;
+        }
+
+        $currentSubscription = db()
+            ->select('subscriptions')
+            ->where('payment_session_id', $this->id())
+            ->first();
+
+        if (!$currentSubscription) {
+            return false;
+        }
+
+        db()
+            ->update('subscriptions')
+            ->params([
+                'status' => $currentSubscription['trial_ends_at'] ? Subscription::STATUS_TRIAL : Subscription::STATUS_ACTIVE,
+                'subscription_id' => $this->subscriptionId(),
+            ])
+            ->where('payment_session_id', $this->id())
+            ->execute();
+
+        return true;
+    }
+
     public function __call($method, $args)
     {
         return $this->providerSession->$method(...$args);
