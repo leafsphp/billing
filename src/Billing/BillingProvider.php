@@ -45,6 +45,20 @@ interface BillingProvider
     public function subscribe(array $data): Session;
 
     /**
+     * Switch user to a different subscription tier
+     * @param array $data The data for new subscription [name/id required]
+     * @return bool
+     */
+    public function changeSubcription(array $data): bool;
+
+    /**
+     * Cancel a subscription using its id
+     * @param string $id The subscription id
+     * @return bool
+     */
+    public function cancelSubscription(string $id): bool;
+
+    /**
      * Get a session by ID
      * @param string $id
      * @return Session|null
@@ -73,9 +87,9 @@ interface BillingProvider
     /**
      * Get a tier by it's id
      * @param string $id The billing tier id
-     * @return array
+     * @return array|null
      */
-    public function tier(string $id): array;
+    public function tier(string $id): ?array;
 
     /**
      * Get billing periods as defined in the billing config

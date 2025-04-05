@@ -2,6 +2,13 @@
 
 namespace App\Controllers\Billing;
 
+/**
+ * Billing Callback
+ * ----
+ * This controller processes the billing provider’s callback after a payment.
+ * Since it's usually stateful, it can use sessions, authentication, and other stateful data.
+ * It runs when the user is redirected back to your app after completing payment.
+ */
 class CallbacksController extends Controller
 {
     public function handle()
@@ -9,8 +16,6 @@ class CallbacksController extends Controller
         $billingSession = billing()->callback();
 
         if (!$billingSession->isSuccessful()) {
-            // Handle the error
-            // Log the error or notify the user
             // replace the line below with your own handler :-)
             return response()->json([
                 'message' => 'Payment failed',
@@ -23,9 +28,8 @@ class CallbacksController extends Controller
         // activate the subscription/trial mode tied to the billing session
         $billingSession->activateSubscription();
 
-        // Perform any additional actions after the payment is successful
-        // $billingSession->user() will give you the user who made the payment (if available)
+        // ...
 
-        return response()->redirect('/');
+        return response()->redirect('/dashboard');
     }
 }
