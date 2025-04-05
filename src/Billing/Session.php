@@ -212,6 +212,26 @@ class Session
         return true;
     }
 
+    /**
+     * Get the user tied to the session
+     * @return \Leaf\Auth\User|null
+     */
+    public function user()
+    {
+        if (function_exists('auth')) {
+            $user = db()->select(auth()->config('db.table'), 'id')
+                ->where('billing_id', $this->providerSession->customer)
+                ->first();
+
+            if ($user) {
+                return auth()->find($user['id']);
+            }
+        }
+
+        return null;
+    }
+
+
     public function __call($method, $args)
     {
         return $this->providerSession->$method(...$args);
