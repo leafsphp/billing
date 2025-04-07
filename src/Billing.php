@@ -25,7 +25,7 @@ class Billing
 
     /**
      * Get a billing provider via name in config
-     * 
+     *
      * @param string|null $driver Provider name
      * @throws \Exception
      * @return \Leaf\Billing\BillingProvider
@@ -61,7 +61,7 @@ class Billing
     {
         return [
             \Leaf\Billing\Commands\ScaffoldSubscriptionsCommand::class,
-            // \Leaf\Billing\Commands\ScaffoldWebhooksCommand::class,
+            \Leaf\Billing\Commands\ConfigBillingComand::class,
             // \Leaf\Billing\Commands\ScaffoldBillingPlansCommand::class,
             // \Leaf\Billing\Commands\BillingInitPlansCommand::class,
         ];

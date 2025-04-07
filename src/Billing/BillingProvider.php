@@ -11,6 +11,12 @@ namespace Leaf\Billing;
 interface BillingProvider
 {
     /**
+     * Create subscription tiers on billing provider
+     * @return bool
+     */
+    public function initialize(): bool;
+
+    /**
      * Retrieve stripe customer for current user
      * @return \Stripe\Customer|null
      */
