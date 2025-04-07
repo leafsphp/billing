@@ -27,6 +27,20 @@ class WebhooksController extends Controller
          * $event->activateSubscription() - to activate the new subscription in webhook (if available)
          */
 
+        if ($event->is('invoice.payment_succeeded')) {
+            // Payment was successful
+
+            if ($event->data()['object']['billing_reason'] === 'subscription_cycle') {
+                // Subscription renewed/charged after trial/cycle
+                // ✅ Give access to your service
+            }
+
+            // Other payment succeeded events
+            // ✅ Give access to your service
+
+            return;
+        }
+
         if ($event->is('customer.subscription.updated')) {
             if ($event->activateSubscription()) {
                 response()->json([
@@ -74,10 +88,11 @@ class WebhooksController extends Controller
         if ($event->is('customer.subscription.resumed')) {
             // Subscription was resumed
             // ✅ Give access to your service
-            // $event->user() will give you the user who made the payment (if available)
             return;
         }
 
         // ... handle all other necessary events
     }
 }
+// You can also use the event data to perform other actions, such as sending emails, updating your database, etc.
+// You can also use the event data to perform other actions, such as sending emails, updating your database, etc.
