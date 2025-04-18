@@ -8,19 +8,19 @@
 <h1 align="center">Leaf Billing (Beta)</h1>
 
 <p align="center">
-  <a href="https://packagist.org/packages/leafs/leaf"
+  <a href="https://packagist.org/packages/leafs/billing"
     ><img
-      src="https://poser.pugx.org/leafs/leaf/v/stable"
+      src="https://poser.pugx.org/leafs/billing/v/stable"
       alt="Latest Stable Version"
   /></a>
-  <a href="https://packagist.org/packages/leafs/leaf"
+  <a href="https://packagist.org/packages/leafs/billing"
     ><img
-      src="https://poser.pugx.org/leafs/leaf/downloads"
+      src="https://poser.pugx.org/leafs/billing/downloads"
       alt="Total Downloads"
   /></a>
-  <a href="https://packagist.org/packages/leafs/leaf"
+  <a href="https://packagist.org/packages/leafs/billing"
     ><img
-      src="https://poser.pugx.org/leafs/leaf/license"
+      src="https://poser.pugx.org/leafs/billing/license"
       alt="License"
   /></a>
 </p>
@@ -33,7 +33,7 @@ Leaf's billing system helps makers move faster by handling payments and subscrip
 
 To get started, create a Stripe account and grab your API keys. Then, drop them into your `.env` file:
 
-```env:no-line-numbers [Stripe]
+```env [Stripe]
 BILLING_PROVIDER=stripe
 STRIPE_API_KEY=sk_test_XXXX
 STRIPE_PUBLISHABLE_KEY=pk_test_XXXX
@@ -50,7 +50,7 @@ leaf install stripe
 
 Billing on-the-fly is the fastest way to charge customers—ideal for one-time payments, donations, or services. Just generate a payment link with Leaf Billing, and we’ll handle the rest. You can do this using the `billing()` helper in your controller.
 
-```php:no-line-numbers [MyController.php]
+```php
 ...
 
 public function handleCartPurchase($cartId) {
@@ -110,13 +110,13 @@ class CallbacksController extends Controller
 
 Unlike one-time payments, subscriptions require a more structured setup—but Leaf Billing makes it effortless. Just run the `scaffold:subscriptions` command to instantly generate everything you need: billing config, controllers, routes, and views. You'll be up and running with subscriptions in minutes.
 
-```bash:no-line-numbers
+```bash
 php leaf scaffold:subscriptions
 ```
 
 You then need to update the generated `config/billing.php` file with your subscription tiers under the `tiers` key:
 
-```php:no-line-numbers [billing.php]
+```php
 ...
     'tiers' => [
         [
@@ -177,11 +177,11 @@ You then need to update the generated `config/billing.php` file with your subscr
 
 The `scaffold:subscriptions` command also generates a pricing component tailored to your chosen view engine—Blade, React, Vue, or Svelte. You can display your plans with just one line of code. The component is fully customizable, so you can tweak the design to match your app’s look and feel seamlessly.
 
-```blade:no-line-numbers [Blade]
+```blade [Blade]
 @component('components.billing.pricing')
 ```
 
-```jsx:no-line-numbers [React]
+```jsx [React]
 import Pricing from '@/components/billing/pricing';
 
 ...
@@ -189,7 +189,7 @@ import Pricing from '@/components/billing/pricing';
 <Pricing />
 ```
 
-```vue:no-line-numbers [Vue]
+```vue [Vue]
 <script setup>
 import Pricing from '@/components/billing/pricing.vue';
 
@@ -201,7 +201,7 @@ import Pricing from '@/components/billing/pricing.vue';
 </template>
 ```
 
-```svelte:no-line-numbers [Svelte]
+```svelte [Svelte]
 <script>
 import Pricing from '@/components/billing/pricing.svelte';
 </script>
@@ -213,7 +213,7 @@ import Pricing from '@/components/billing/pricing.svelte';
 
 Once you’ve charged a customer—especially for a subscription—you’ll want to track their payment status. The best way to do this is through webhooks. When you run the `scaffold:subscriptions` command, Leaf Billing automatically generates a webhook controller that listens for events from your billing provider and handles them for you.
 
-```php:no-line-numbers [WebhooksController.php]
+```php [WebhooksController.php]
 <?php
 
 namespace App\Controllers\Billing;
