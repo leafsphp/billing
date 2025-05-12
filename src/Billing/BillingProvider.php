@@ -18,9 +18,9 @@ interface BillingProvider
 
     /**
      * Retrieve stripe customer for current user
-     * @return \Stripe\Customer|null
+     * @return Customer|null
      */
-    public function customer(): ?\Stripe\Customer;
+    public function customer(): ?Customer;
 
     /**
      * Update user with provider customer id
