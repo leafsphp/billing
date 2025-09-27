@@ -3,7 +3,6 @@
 namespace Leaf\Billing\Commands;
 
 use Leaf\Sprout\Command;
-use Symfony\Component\Yaml\Yaml;
 
 class ConfigBillingComand extends Command
 {
