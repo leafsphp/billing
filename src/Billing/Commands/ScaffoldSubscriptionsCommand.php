@@ -40,8 +40,8 @@ class ScaffoldSubscriptionsCommand extends Command
         );
 
         \Leaf\FS\Directory::copy(
-            getcwd(),
             __DIR__ . "/themes/$scaffold",
+            getcwd(),
             ['recursive' => true]
         );
 
