@@ -2,15 +2,15 @@
 
 namespace Leaf\Billing\Commands;
 
-use Aloe\Command;
+use Leaf\Sprout\Command;
 use Symfony\Component\Yaml\Yaml;
 
 class ConfigBillingComand extends Command
 {
-    protected static $defaultName = 'config:billing';
-    public $description = 'Scaffold billing plans on payment provider';
+    protected $signature = 'config:billing';
+    protected $description = 'Scaffold billing plans on payment provider';
 
-    public $help = 'This command will scaffold billing plans on the payment provider. It will also cache your plans in storage/billing';
+    protected $help = 'This command will scaffold billing plans on the payment provider. It will also cache your plans in storage/billing';
 
     protected function handle()
     {

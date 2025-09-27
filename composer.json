@@ -30,5 +30,8 @@
 	"prefer-stable": true,
     "require-dev": {
         "leafs/alchemy": "^2.2"
+    },
+    "require": {
+        "leafs/sprout": "^0.6.0"
     }
 }
