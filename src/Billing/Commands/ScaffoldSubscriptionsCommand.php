@@ -34,8 +34,8 @@ class ScaffoldSubscriptionsCommand extends Command
         $this->info("Scaffolding subscriptions using $scaffold + $type");
 
         \Leaf\FS\Directory::copy(
-            getcwd(),
             __DIR__ . "/themes/subscriptions/$type",
+            getcwd(),
             ['recursive' => true]
         );
 
