@@ -2,21 +2,16 @@
 
 namespace Leaf\Billing\Commands;
 
-use Aloe\Command;
+use Leaf\Sprout\Command;
 use Symfony\Component\Yaml\Yaml;
 
 class ScaffoldSubscriptionsCommand extends Command
 {
-    protected static $defaultName = 'scaffold:subscriptions';
-    public $description = 'Scaffold billing plans for subscriptions';
+    protected $signature = 'scaffold:subscriptions
+        {--scaffold=default : Which scaffold to use for subscriptions (default/react/vue/svelte)}';
+    protected $description = 'Scaffold billing plans for subscriptions';
 
-    public $help = "This command will scaffold billing plans for your application. You can choose between different scaffolds like default, react, vue, svelte etc.";
-
-    protected function config()
-    {
-        $this
-            ->setOption('scaffold', 's', 'optional', 'Which scaffold to use for authentication (default/react/vue/svelte)', 'default');
-    }
+    protected $help = "This command will scaffold billing plans for your application. You can choose between different scaffolds like default, react, vue, svelte etc.";
 
     protected function handle()
     {
@@ -38,12 +33,21 @@ class ScaffoldSubscriptionsCommand extends Command
 
         $this->info("Scaffolding subscriptions using $scaffold + $type");
 
-        \Aloe\Installer::magicCopy(__DIR__ . "/themes/subscriptions/$type");
-        \Aloe\Installer::magicCopy(__DIR__ . "/themes/$scaffold");
+        \Leaf\FS\Directory::copy(
+            __DIR__ . "/themes/subscriptions/$type",
+            getcwd(),
+            ['recursive' => true]
+        );
+
+        \Leaf\FS\Directory::copy(
+            __DIR__ . "/themes/$scaffold",
+            getcwd(),
+            ['recursive' => true]
+        );
 
         $this->info('Scaffold generated successfully, running subscription schemas...');
 
-        \Aloe\Core::run('php leaf db:migrate subscriptions', $this->output());
+        sprout()->process('php leaf db:migrate subscriptions')->run();
 
         if (\Leaf\FS\File::exists($usersSchema = "$directory/app/database/users.yml")) {
             $data = Yaml::parseFile($usersSchema);
@@ -59,7 +63,7 @@ class ScaffoldSubscriptionsCommand extends Command
             }
         }
 
-        \Aloe\Core::run('php leaf db:migrate users', $this->output());
+        sprout()->process('php leaf db:migrate users')->run();
 
         return 0;
     }
