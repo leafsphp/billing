@@ -27,11 +27,16 @@
         ]
     },
     "minimum-stability": "dev",
-	"prefer-stable": true,
+    "prefer-stable": true,
     "require-dev": {
         "leafs/alchemy": "^2.2"
     },
     "require": {
         "leafs/sprout": "*"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-v5.x": "5.0.x-dev"
+        }
     }
 }
