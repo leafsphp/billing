@@ -17,26 +17,41 @@ class WebhooksController extends Controller
         $event = billing()->webhook();
 
         /**
+         * $event->id() - the provider's unique event id (store it to skip redelivered events)
          * $event->type() - to get the event type
          * $event->is() - to check if the event is a specific type
          * $event->tier() - to get the subscription tier (if available)
          * $event->subscription() - to get the current subscription (if available)
          * $event->user() - to get the current user (returns auth()->user() if available)
          * $event->previousSubscriptionTier() - to get the previous subscription tier (if available)
-         * $event->cancelSubscription() - to cancel the subscription in webhook request (if available)
          * $event->activateSubscription() - to activate the new subscription in webhook (if available)
+         * $event->renewSubscription() - to extend the subscription after a successful renewal payment
+         * $event->markSubscriptionPastDue() - to flag the subscription when a renewal payment fails
+         * $event->cancelSubscription() - to cancel the subscription in webhook request (if available)
          */
 
         if ($event->is('invoice.payment_succeeded')) {
             // Payment was successful
 
             if ($event->data()['object']['billing_reason'] === 'subscription_cycle') {
-                // Subscription renewed/charged after trial/cycle
-                // ✅ Give access to your service
+                // Subscription renewed: push end_date a period forward and
+                // clear any past_due state from failed earlier attempts
+                $event->renewSubscription();
             }
 
             // Other payment succeeded events
             // ✅ Give access to your service
+
+            return;
+        }
+
+        if ($event->is('invoice.payment_failed')) {
+            // Renewal payment failed: user enters dunning. Stripe retries the
+            // charge; invoice.payment_succeeded will clear this when it recovers
+            $event->markSubscriptionPastDue();
+
+            // 📧 Maybe email the user to update their card?
+            // billing()->portal() gives them a link to do exactly that
 
             return;
         }

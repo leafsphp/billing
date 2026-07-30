@@ -73,8 +73,18 @@ class Event
      */
     public function subscription()
     {
+        // webhooks are stateless, so the subscription is resolved straight
+        // from the subscriptions table without needing an auth context
         if ($subscriptionId = $this->event['data']['object']['id'] ?? null) {
-            return $this->user() ? $this->user()->subscriptions()->where('subscription_id', $subscriptionId)->first() : null;
+            if ($subscription = db()->select('subscriptions')->where('subscription_id', $subscriptionId)->first()) {
+                return $subscription;
+            }
+        }
+
+        if ($subscriptionCode = $this->event['data']['object']['subscription_code'] ?? null) {
+            if ($subscription = db()->select('subscriptions')->where('subscription_id', $subscriptionCode)->first()) {
+                return $subscription;
+            }
         }
 
         return null;
@@ -131,17 +141,42 @@ class Event
     }
 
     /**
+     * Get the provider's unique id for this event.
+     * Store handled ids to make your webhook handler idempotent —
+     * providers redeliver events, so the same event can arrive twice.
+     *
+     * @return string|null
+     */
+    public function id(): ?string
+    {
+        return $this->event['id'] ?? null;
+    }
+
+    /**
+     * Get the event creation timestamp
+     * @return int|null
+     */
+    public function createdAt(): ?int
+    {
+        return $this->event['created'] ?? null;
+    }
+
+    /**
      * Activate new subscription if available
      * @return bool
      */
     public function activateSubscription(): bool
     {
         if ($subscription = $this->subscription()) {
+            // resolved before the update chain starts: tier() queries through
+            // the same db instance and would clobber a half-built query
+            $planId = $this->tier()['id'] ?? $subscription['plan_id'];
+
             db()
                 ->update('subscriptions')
                 ->params([
                     'status' => Subscription::STATUS_ACTIVE,
-                    'plan_id' => $this->tier()['id'] ?? null,
+                    'plan_id' => $planId,
                     'trial_ends_at' => null,
                 ])
                 ->where('id', $subscription['id'])
@@ -154,17 +189,86 @@ class Event
     }
 
     /**
-     * Cancel subscription in webhook (if available)
+     * Renew the subscription tied to this event.
+     * Call this on a successful renewal payment: it pushes end_date one
+     * billing period forward and clears past_due/trial back to active.
+     *
      * @return bool
      */
-    public function cancelSubscription(): bool
+    public function renewSubscription(): bool
+    {
+        if (!($subscription = $this->subscription())) {
+            return false;
+        }
+
+        $tier = billing()->tier($subscription['plan_id']);
+        $period = rtrim($tier['billingPeriod'] ?? 'monthly', 'ly');
+        $currentEnd = $subscription['end_date'] ?? null;
+
+        // renew from the current period end when it's still in the future,
+        // otherwise from now (e.g. recovering from past_due)
+        $renewFrom = ($currentEnd && strtotime($currentEnd) > time())
+            ? tick($currentEnd)
+            : tick();
+
+        db()
+            ->update('subscriptions')
+            ->params([
+                'status' => Subscription::STATUS_ACTIVE,
+                'trial_ends_at' => null,
+                'end_date' => $renewFrom->add(1, $period)->format('YYYY-MM-DD HH:mm:ss'),
+            ])
+            ->where('id', $subscription['id'])
+            ->execute();
+
+        return true;
+    }
+
+    /**
+     * Mark the subscription tied to this event as past due.
+     * Call this when a renewal payment fails: the user enters dunning and
+     * hasActiveSubscription() returns false until payment recovers.
+     *
+     * @return bool
+     */
+    public function markSubscriptionPastDue(): bool
+    {
+        if (!($subscription = $this->subscription())) {
+            return false;
+        }
+
+        db()
+            ->update('subscriptions')
+            ->params([
+                'status' => Subscription::STATUS_PAST_DUE,
+            ])
+            ->where('id', $subscription['id'])
+            ->execute();
+
+        return true;
+    }
+
+    /**
+     * Cancel subscription in webhook (if available)
+     *
+     * The subscription keeps its current end_date when it is in the future,
+     * so a user who cancelled at period end keeps access until then (grace
+     * period). Pass false to revoke access immediately.
+     *
+     * @param bool $keepGracePeriod Keep access until the paid-for period ends
+     * @return bool
+     */
+    public function cancelSubscription(bool $keepGracePeriod = true): bool
     {
         if ($subscription = $this->subscription()) {
+            $currentEnd = $subscription['end_date'] ?? null;
+            $keepCurrentEnd = $keepGracePeriod && $currentEnd && strtotime($currentEnd) > time();
+
             db()
                 ->update('subscriptions')
                 ->params([
                     'status' => Subscription::STATUS_CANCELLED,
-                    'end_date' => tick()->format('Y-m-d H:i:s'),
+                    'end_date' => $keepCurrentEnd ? $currentEnd : tick()->format('YYYY-MM-DD HH:mm:ss'),
                 ])
                 ->where('id', $subscription['id'])
                 ->execute();

@@ -110,5 +110,5 @@ return [
         ],
 
         // As many tiers as you want
-    ]
+    ],
 ];

@@ -200,11 +200,18 @@ class Session
             return false;
         }
 
+        // dates are recomputed at activation: checkout can happen long after
+        // the session (and its provisional dates) were created
+        $tier = billing()->tier($currentSubscription['plan_id']);
+        $period = rtrim($tier['billingPeriod'] ?? 'monthly', 'ly');
+
         db()
             ->update('subscriptions')
             ->params([
                 'status' => $currentSubscription['trial_ends_at'] ? Subscription::STATUS_TRIAL : Subscription::STATUS_ACTIVE,
                 'subscription_id' => $this->subscriptionId(),
+                'start_date' => tick()->format('YYYY-MM-DD HH:mm:ss'),
+                'end_date' => tick()->add(1, $period)->format('YYYY-MM-DD HH:mm:ss'),
             ])
             ->where('payment_session_id', $this->id())
             ->execute();

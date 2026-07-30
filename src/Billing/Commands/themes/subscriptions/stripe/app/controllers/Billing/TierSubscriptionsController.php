@@ -14,7 +14,7 @@ class TierSubscriptionsController extends Controller
     public function handle(string $tierId)
     {
         if (auth()->user()->hasActiveSubscription()) {
-            billing()->changeSubcription([
+            billing()->changeSubscription([
                 'id' => $tierId,
             ]);
 

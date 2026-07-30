@@ -3,7 +3,6 @@
 namespace Leaf\Billing\Commands;
 
 use Leaf\Sprout\Command;
-use Symfony\Component\Yaml\Yaml;
 
 class ConfigBillingComand extends Command
 {
@@ -22,6 +21,7 @@ class ConfigBillingComand extends Command
         } catch (\Throwable $th) {
             $this->error('Error publishing billing plans on provider');
             $this->error($th->getMessage());
+
             return 1;
         }
 

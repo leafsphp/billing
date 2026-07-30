@@ -55,14 +55,33 @@ interface BillingProvider
      * @param array $data The data for new subscription [name/id required]
      * @return bool
      */
-    public function changeSubcription(array $data): bool;
+    public function changeSubscription(array $data): bool;
 
     /**
      * Cancel a subscription using its id
+     *
+     * @param string $id The subscription id
+     * @param bool $atPeriodEnd Cancel at the end of the current billing period
+     *  so the user keeps access to what they paid for (default), or immediately.
+     * @return bool
+     */
+    public function cancelSubscription(string $id, bool $atPeriodEnd = true): bool;
+
+    /**
+     * Resume a subscription that was scheduled to cancel at period end
      * @param string $id The subscription id
      * @return bool
      */
-    public function cancelSubscription(string $id): bool;
+    public function resumeSubscription(string $id): bool;
+
+    /**
+     * Get a link to the provider's hosted billing management page
+     * for the current user (update card, view invoices, cancel, ...)
+     *
+     * @param string|null $returnUrl Where the user is sent after managing billing
+     * @return string|null The portal url, or null if unavailable
+     */
+    public function portal(?string $returnUrl = null): ?string;
 
     /**
      * Get a session by ID

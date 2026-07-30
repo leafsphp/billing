@@ -11,7 +11,7 @@ class ScaffoldSubscriptionsCommand extends Command
         {--scaffold=default : Which scaffold to use for subscriptions (default/react/vue/svelte)}';
     protected $description = 'Scaffold billing plans for subscriptions';
 
-    protected $help = "This command will scaffold billing plans for your application. You can choose between different scaffolds like default, react, vue, svelte etc.";
+    protected $help = 'This command will scaffold billing plans for your application. You can choose between different scaffolds like default, react, vue, svelte etc.';
 
     protected function handle()
     {
@@ -24,9 +24,9 @@ class ScaffoldSubscriptionsCommand extends Command
 
             if (strpos($content, '.jsx') !== false) {
                 $scaffold = 'react';
-            } else if (strpos($content, '.svelte') !== false) {
+            } elseif (strpos($content, '.svelte') !== false) {
                 $scaffold = 'svelte';
-            } else if (strpos($content, '.vue') !== false) {
+            } elseif (strpos($content, '.vue') !== false) {
                 $scaffold = 'vue';
             }
         }
