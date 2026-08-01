@@ -25,6 +25,14 @@ class Tier
         $this->tierData['link'] = "/billing/payments/$id";
         $this->tierData['billingPeriod'] = $tierData['billingPeriod'] ?? 'one-time';
         $this->tierData['price'] = $tierData['price'] ?? ($tierData['billingPeriod'] === 'daily' ? $tierData['price.daily'] : ($tierData['billingPeriod'] === 'monthly' ? $tierData['price.monthly'] : $tierData['price.yearly']));
+
+        // prices are charged in one currency but may need to be shown in
+        // another, so carry both rather than making views do the maths
+        $this->tierData['currency'] = $this->tierData['currency'] ?? Currency::code();
+        $this->tierData['currencySymbol'] = Currency::symbol();
+        $this->tierData['displayCurrency'] = Currency::displayCode();
+        $this->tierData['displayPrice'] = Currency::convert($this->tierData['price']);
+        $this->tierData['formattedPrice'] = Currency::format($this->tierData['price']);
     }
 
     public function __get($key)

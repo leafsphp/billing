@@ -33,10 +33,15 @@ return [
             'secrets.webhook' => _env('STRIPE_WEBHOOK_SECRET'),
             'version' => _env('STRIPE_API_VERSION', '2023-10-16'),
             'currency' => [
-                'name' => _env('STRIPE_CURRENCY', 'usd'),
-                'symbol' => _env('STRIPE_CURRENCY_SYMBOL', '$'),
-                'display' => _env('STRIPE_CURRENCY_DISPLAY', 'USD'),
-                'locale' => _env('STRIPE_CURRENCY_LOCALE', 'en_US'),
+                'name' => _env('STRIPE_CURRENCY', _env('BILLING_CURRENCY', 'usd')),
+                'symbol' => _env('STRIPE_CURRENCY_SYMBOL', _env('BILLING_CURRENCY_SYMBOL', '$')),
+                'locale' => _env('STRIPE_CURRENCY_LOCALE', _env('BILLING_CURRENCY_LOCALE', 'en_US')),
+
+                // show prices in a different currency from the one you
+                // charge in. Leave unset to display the charge currency.
+                'display' => _env('BILLING_CURRENCY_DISPLAY', null),
+                'displaySymbol' => _env('BILLING_CURRENCY_DISPLAY_SYMBOL', null),
+                'conversion' => _env('BILLING_CURRENCY_DISPLAY_CONVERSION', null),
             ],
         ],
 
@@ -47,10 +52,15 @@ return [
             'secrets.webhook' => _env('PAYSTACK_WEBHOOK_SECRET'),
             'version' => _env('PAYSTACK_API_VERSION', null),
             'currency' => [
-                'name' => _env('PAYSTACK_CURRENCY', 'ngn'),
-                'symbol' => _env('PAYSTACK_CURRENCY_SYMBOL', '₦'),
-                'display' => _env('PAYSTACK_CURRENCY_DISPLAY', 'NGN'),
-                'locale' => _env('PAYSTACK_CURRENCY_LOCALE', 'en_US'),
+                'name' => _env('PAYSTACK_CURRENCY', _env('BILLING_CURRENCY', 'ngn')),
+                'symbol' => _env('PAYSTACK_CURRENCY_SYMBOL', _env('BILLING_CURRENCY_SYMBOL', '₦')),
+                'locale' => _env('PAYSTACK_CURRENCY_LOCALE', _env('BILLING_CURRENCY_LOCALE', 'en_US')),
+
+                // show prices in a different currency from the one you
+                // charge in. Leave unset to display the charge currency.
+                'display' => _env('BILLING_CURRENCY_DISPLAY', null),
+                'displaySymbol' => _env('BILLING_CURRENCY_DISPLAY_SYMBOL', null),
+                'conversion' => _env('BILLING_CURRENCY_DISPLAY_CONVERSION', null),
             ],
         ],
     ],
