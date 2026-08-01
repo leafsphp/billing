@@ -42,6 +42,31 @@ class Billing
     }
 
     /**
+     * Get the billing config, or one key from it
+     *
+     * @param string|null $key Dot-notation key, eg `connections.stripe.currency`
+     * @return mixed
+     */
+    public function config(?string $key = null)
+    {
+        if ($key === null) {
+            return $this->config;
+        }
+
+        $value = $this->config;
+
+        foreach (explode('.', $key) as $segment) {
+            if (!is_array($value) || !array_key_exists($segment, $value)) {
+                return null;
+            }
+
+            $value = $value[$segment];
+        }
+
+        return $value;
+    }
+
+    /**
      * Get a billing provider via name in config
      *
      * @param string|null $driver Provider name
