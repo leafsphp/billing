@@ -29,16 +29,16 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require-dev": {
-        "leafs/alchemy": "v5.x-dev",
-        "friendsofphp/php-cs-fixer": "^3.66",
-        "pestphp/pest": "*",
-        "leafs/db": "*",
-        "leafs/date": "*",
-        "leafs/anchor": "^1.6"
+        "leafs/db": "^5.0",
+        "leafs/date": "^5.0",
+        "leafs/anchor": "^5.0"
     },
     "require": {
         "php": "^8.2",
-        "leafs/sprout": "*"
+        "friendsofphp/php-cs-fixer": "*",
+        "pestphp/pest": "*",
+        "leafs/alchemy": "^5.0",
+        "leafs/sprout": "^5.0"
     },
     "scripts": {
         "alchemy": "@php vendor/bin/alchemy all",
