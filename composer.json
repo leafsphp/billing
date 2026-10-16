@@ -28,17 +28,17 @@
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
-    "require-dev": {
-        "leafs/db": "^5.0",
-        "leafs/date": "^5.0",
-        "leafs/anchor": "^5.0"
-    },
     "require": {
         "php": "^8.2",
+        "leafs/anchor": "^5.0",
+        "leafs/date": "^5.0",
+        "leafs/db": "^5.0",
+        "leafs/sprout": "^5.0"
+    },
+    "require-dev": {
         "friendsofphp/php-cs-fixer": "*",
         "pestphp/pest": "*",
-        "leafs/alchemy": "^5.0",
-        "leafs/sprout": "^5.0"
+        "leafs/alchemy": "^5.0"
     },
     "scripts": {
         "alchemy": "@php vendor/bin/alchemy all",
